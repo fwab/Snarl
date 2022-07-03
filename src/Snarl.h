@@ -1,21 +1,25 @@
 #include <jvmti.h>
 #include <jni.h>
 #include <iostream>
+#include <Windows.h>
 #include <debugapi.h>
 
-#include "Lunar.h"
+#include <iostream>
+
+#include "Clients/Lunar/Lunar.h"
+#include "Clients/Forge/Forge.h"
+#include "Clients/Vanilla/Vanilla.h"
 
 using namespace std;
 
 class Snarl {
     public:
         Snarl();
-        string checkClient();
-        JavaVM *getJVM();
-        JNIEnv *getENV();
+
+        void checkClient();
         
-        void devDebug(string);
+        void dev();
     private:
-        JavaVM *JVM;
-        JNIEnv *ENV;
+        JavaVM *jvm;
+        JNIEnv *env;
 };

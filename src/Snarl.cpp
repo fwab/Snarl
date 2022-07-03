@@ -1,10 +1,14 @@
 #include "Snarl.h"
 
 Snarl::Snarl() {
-    JavaVM *jvm = nullptr;
-	JNIEnv *env = nullptr;
+    dev();
 
-    	jsize count;
+    cout << "Snarl Loaded" << endl;
+
+	jvm = nullptr;
+	env = nullptr;
+
+    jsize count;
 	if (JNI_GetCreatedJavaVMs(&jvm, 1, &count) != JNI_OK || count == 0)
 		return;
 
@@ -14,19 +18,30 @@ Snarl::Snarl() {
 	if (res != JNI_OK)
 		return;
 
-    switch(checkClient()) {
-        case "Lunar":
-            new Lunar();
-    }
+    Snarl::checkClient();
 }
 
-string Snarl::checkClient() {
-    jclass isLunar = ENV->FindClass("com/moonsworth/lunar/patcher/LunarMain");
-    if(isLunar != nullptr) return "Lunar"
+void Snarl::checkClient() {
+    cout << "Checking client" << endl;
+
+    jclass isLunar = env->FindClass("com/moonsworth/lunar/patcher/LunarMain");
+	if (isLunar != nullptr) { new Lunar(); return; }
+
+	// TODO - Fix OptiFine client flagging as Vanilla rather than Forge
+	 
+	jclass isForge = env->FindClass("net/minecraftforge/common/MinecraftForge");
+	if (isForge != nullptr) { new Forge(); return; }
+	
+	new Vanilla();
+	return;
 }
 
-void Snarl::devDebug(string message) {
-    char buffer[100];
-    sprintf_s(buffer, "[SNARL-DEV] %s\n", message);
-    OutputDebugStringA(buffer);
+void Snarl::dev() {
+    AllocConsole();
+	SetConsoleCtrlHandler(NULL, true);
+	FILE *fIn;
+	FILE* fOut;
+	freopen_s(&fIn, "conin$", "r", stdin);
+	freopen_s(&fOut, "conout$", "w", stdout);
+	freopen_s(&fOut, "conout$", "w", stderr);
 }

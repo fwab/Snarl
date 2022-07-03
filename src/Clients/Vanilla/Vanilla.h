@@ -2,7 +2,7 @@
 
 using namespace std;
 
-class Lunar {
+class Vanilla {
     public:
-        Lunar();
+        Vanilla();
 };
